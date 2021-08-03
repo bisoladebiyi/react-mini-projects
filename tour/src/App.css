@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap');
+*{
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  background: #f9f9f9;
+  font-family: Roboto;
+}
+.tour-heading{
+  font-size: 40px;
+  margin: 30px auto;
+  position: relative;
+}
+.tour-heading::after {
+  content: "";
+  position: absolute;
+  width: 90px;
+  height: 5px;
+  border-radius: 1px;
+  left: 0;
+  bottom: -5px;
+  background: #39A2DB;
+}
+.tour-container {
+  width: 80vw;
+  max-width: 600px;
+  border-radius: 10px;
+  background: #fff;
+  margin-bottom: 30px;
+  overflow: hidden;
+  box-shadow: 0px 0px 6px 1px #EFEFEF;
+}
+img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+.city-info {
+  padding: 30px;
+}
+.name-price {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.price {
+  color: #39A2DB;;
+  position: relative;
+  z-index: 10;
+}
+.price::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -10px;
+  z-index: -1;
+  opacity: 0.4;
+  width: 80px;
+  height: 30px;
+  border-radius: 5px;
+  background: #A2DBFA;
+}
+.desc {
+  font-size: 14px;
+  line-height: 25px;
+  color: #716f81;
+}
+.tour-btn {
+  color: #39A2DB;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.btn2-container {
+  width: 100%;
+  text-align: center;
+}
+.tour-btn2 {
+  margin: 30px 0 0;
+  width: 70%;
+  height: 40px;
+  border: 1px solid #8d2828;
+  color: #8d2828;
+  background: none;
+  border-radius: 2px;
+}
+.tour-btn2:hover {
+  background: #8d2828;
+  color: #fff;
+  transition: ease all 0.3s;
+}
+
+@media (max-width: 500px) and (min-width: 0) {
+  .city-info {
+    padding: 20px;
+  }
+  .tour-name {
+    font-size: 15px;
+  }
+  .name-price {
+    margin-bottom: 15px;
+  }
+  .price {
+    font-size: 15px;
+  }
+  .price::after {
+    top: -3px;
+    left: -8px;
+    width: 60px;
+    height: 24px;
+  }
+  .desc {
+    font-size: 13px;
+    line-height: 22px;
+  }
+
+  .tour-btn2 {
+    width: 100%;
+  }
+}
+@media (max-width: 380px) and (min-width: 0) {
+  .tour-name {
+    font-size: 13px;
+  }
+  .desc {
+    font-size: 12px;
+  }
+  .price {
+    font-size: 13px;
+  }
+  .price::after {
+    top: -3px;
+    left: -7.5px;
+    width: 55px;
+    height: 20px;
+  }
+}
+
