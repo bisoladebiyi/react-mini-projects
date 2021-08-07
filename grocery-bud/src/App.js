@@ -38,6 +38,7 @@ function App() {
     if (items.includes(value)) {
       setAdded(false);
       setAlreadyAdded(true);
+      setNumber(items.length)
 
       setTimeout(() => {
         setAlreadyAdded(false);
