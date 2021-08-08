@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Loading from "./component/loading";
 import Alerts from "./component/alerts";
 
@@ -12,10 +12,13 @@ function App() {
   const [added, setAdded] = useState(false);
   const [removed, setRemoved] = useState(false);
   const [alreadyAdded, setAlreadyAdded] = useState(false);
+  const refInput = useRef(null)
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
+      refInput.current.focus()
     }, 3000);
+
   }, []);
 
   if (isLoading) {
@@ -77,6 +80,7 @@ function App() {
             placeholder="e.g Milk"
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            ref={refInput}
           />
           <button className="btn" onClick={(e) => submitData(e)}>
             Submit
