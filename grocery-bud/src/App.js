@@ -1,18 +1,72 @@
 import "./App.css";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useReducer } from "react";
 import Loading from "./component/loading";
 import Alerts from "./component/alerts";
 
+
+const reducer = (state, action) => {
+    
+    if(action.type==='ADD_ITEM'){
+        const newItems = [...state.items, action.payload]
+        return {
+            ...state,
+            items: newItems,
+            showAlert: true,
+            alertContent: "Item Added",
+            color: "green"
+        }
+    }
+    if(action.type === 'NO_ITEM') {
+        return {
+            ...state,
+            showAlert: true,
+            alertContent: "Please add item",
+            color: "orange"
+        }
+    }
+    if(action.type === 'END_ALERT') {
+        return {
+            ...state,
+            showAlert: false
+        }
+    }
+    if(action.type === 'REMOVE_ITEM') {
+        const newItems = state.items.filter((item)=> item.id !== action.payload)
+        return {
+            ...state,
+            items: newItems,
+            showAlert: true,
+            alertContent: "Item Removed",
+            color: "red"
+        }
+    }
+    if(action.type === 'CLEAR_ITEMS') {
+        return {
+            ...state,
+            items: [],
+            showAlert: true,
+            alertContent: "Items Cleared",
+            color: "red"
+        }
+    }
+    return state;
+}
+
+const defaultState = {
+    items: [],
+    showAlert: false,
+    alertContent: "",
+    color: "green"
+}
 function App() {
+//   const input = document.querySelector(".input")
   const [number, setNumber] = useState(0);
-  const [showClearBtn, setShowClearBtn] = useState(false);
   const [value, setValue] = useState("");
-  const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [added, setAdded] = useState(false);
-  const [removed, setRemoved] = useState(false);
-  const [alreadyAdded, setAlreadyAdded] = useState(false);
+  const [state, dispatch] = useReducer(reducer, defaultState)
   const refInput = useRef(null)
+
+
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
@@ -27,57 +81,32 @@ function App() {
 
   const submitData = (e) => {
     e.preventDefault();
-    setItems([...items, value]);
-    setNumber(items.length + 1);
-    console.log(items);
-    setValue("");
 
-    setAdded(true);
-    setTimeout(() => {
-      setAdded(false);
-    }, 2000);
-    setShowClearBtn(true);
-
-    if (items.includes(value)) {
-      setAdded(false);
-      setAlreadyAdded(true);
-      setNumber(items.length)
-
-      setTimeout(() => {
-        setAlreadyAdded(false);
-      }, 2000);
-      return setItems(items);
+    if(value) {
+        const newItem = {id: new Date().getTime().toString(), value}
+        dispatch({type: 'ADD_ITEM', payload: newItem})
+        setValue("")
+        setNumber(state.items.length + 1)
+    } else {
+        dispatch({type: 'NO_ITEM'})
     }
   };
 
-  const clearItems = () => {
-    setItems([]);
-    setNumber(0);
-    setShowClearBtn(false);
-  };
-  const deleteItem = (index) => {
-    const newItems = items.filter((item) => items.indexOf(item) !== index);
-    setItems(newItems);
-    setNumber(items.length - 1);
-    setRemoved(true);
-    setTimeout(() => {
-      setRemoved(false);
-    }, 2000);
-  };
+  const endAlert = () => {
+      dispatch({type: 'END_ALERT'})
+
+  }
 
   return (
     <div className="App">
       <div className="container">
-        {added && <Alerts text="Added new Item" />}
-        {removed && <Alerts text="Item removed" red />}
-        {alreadyAdded && (
-          <Alerts text="You already have this item in your list" orange />
-        )}
+       {state.showAlert && <Alerts close={endAlert} text={state.alertContent} color={state.color} />}
         <h1>Grocery Bud</h1>
         <form action="">
           <input
             type="text"
             placeholder="e.g Milk"
+            className="input"
             value={value}
             onChange={(e) => setValue(e.target.value)}
             ref={refInput}
@@ -87,12 +116,15 @@ function App() {
           </button>
         </form>
         <p className="item-count">Hi there! You have {number} items</p>
-        {items.map((item, index) => {
+        {state.items.map((item) => {
+            const { value, id } = item
           return (
-            <div className="item-container" key={index}>
-              <p className="item">{item}</p>
+            <div className="item-container" key={id}>
+              <p className="item">{value}</p>
               <div>
-                <button onClick={() => deleteItem(index)}>
+                <button onClick={(()=> { 
+                    dispatch({type: 'REMOVE_ITEM', payload: id}) 
+                    setNumber(state.items.length - 1)})}>
                   <svg
                     className="delete"
                     stroke="currentColor"
@@ -110,14 +142,17 @@ function App() {
             </div>
           );
         })}
-        {showClearBtn && (
-          <button className="btn2" onClick={clearItems}>
+        {state.items.length > 0 ? (
+          <button className="btn2" onClick={()=> {
+              dispatch({type: 'CLEAR_ITEMS'})
+              setNumber(0)}}>
             Clear list
           </button>
-        )}
+        ) : null}
       </div>
     </div>
   );
 }
 
 export default App;
+
